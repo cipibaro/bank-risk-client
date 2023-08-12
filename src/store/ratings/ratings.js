@@ -1,8 +1,7 @@
 // Utilities
 import {defineStore} from 'pinia'
 import axiosInstance from '@/plugins/axios';
-
-export const ratingsStore = defineStore('app', {
+export const useRatingsStore = defineStore('app', {
   state: () => ({
     clientsRatings: [],
   }),
