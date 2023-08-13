@@ -5,6 +5,7 @@ import axiosInstance from '@/plugins/axios';
 export const useIndustriesStore = defineStore('industry', {
   state: () => ({
     industries: [],
+    ids: [],
   }),
   actions: {
     /**
@@ -17,8 +18,11 @@ export const useIndustriesStore = defineStore('industry', {
         if (response && response.data && response.data.success) {
           response.data.industries.forEach(industry => {
             this.industries.push(industry.name);
+            this.ids.push(industry);
           });
         }
+
+        // const sms = this.ids.find(industry.)
         /* let i = 0;
          this.industries.forEach(industry => {
            console.log(i + ". Industry name: " + industry.name);

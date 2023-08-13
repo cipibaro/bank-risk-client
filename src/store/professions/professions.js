@@ -5,6 +5,7 @@ import axiosInstance from '@/plugins/axios';
 export const useProfessionsStore = defineStore('profession', {
   state: () => ({
     professions: [],
+    prof: [],
   }),
   actions: {
     /**
@@ -17,6 +18,7 @@ export const useProfessionsStore = defineStore('profession', {
         if (response && response.data && response.data.success) {
           response.data.professions.forEach(profession => {
             this.professions.push(profession.name);
+            this.prof.push(profession);
           });
         }
 

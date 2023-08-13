@@ -13,9 +13,12 @@ export const useClientsStore = defineStore('client', {
      * Gets clients
      * @returns {Promise<void>}
      */
-    async getClients() {
+    async getClients(filters) {
       try {
-        const response = await axiosInstance.get('/clients');
+        const queryParams = filters.map(filter => `${encodeURIComponent(filter.apiValue)}=${encodeURIComponent(filter.value)}`).join('&');
+        const url = '/clients?' + queryParams;
+
+        const response = await axiosInstance.get(url);
         if (response && response.data && response.data.success) {
           this.clients = response.data.clients;
           await clientsRatingsStore.getRatings();
@@ -25,6 +28,11 @@ export const useClientsStore = defineStore('client', {
       }
     },
 
+    /**
+     * Add new client
+     * @param client
+     * @returns {Promise<void>}
+     */
     async addClient(client) {
       try {
         const response = await axiosInstance.post("/clients", {
@@ -33,7 +41,7 @@ export const useClientsStore = defineStore('client', {
           cnp: client.cnp,
           sex: client.sex,
           placeOfBirth: client.placeOfBirth,
-          countyOfBirth: client.countyOfBirth,
+          countyOfb: client.countyOfb,
           dateOfBirth: client.dateOfBirth,
           series: client.series,
           seriesNumber: client.seriesNumber,
@@ -58,13 +66,45 @@ export const useClientsStore = defineStore('client', {
         });
         if (response && response.data && response.data.success) {
           console.log("Client added successfully");
-          await this.getClients();
-
+          await this.getClients([]);
         }
       } catch
         (error) {
         console.log("Error adding client", error);
       }
+    },
+
+    /**
+     * Update client
+     * @param id
+     * @param client
+     * @returns {Promise<void>}
+     */
+    async updateClient(id, client) {
+      try {
+        const url = "http://localhost:3000/clients/" + id;
+        const response = await axiosInstance.patch(url, client);
+        if (response && response.data && response.data.success) {
+          console.log("Client updated successfully");
+          await this.getClients([]);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+
+    async deleteClient(id) {
+      try {
+        const response = await axiosInstance.delete('/clients/' + id);
+        if (response && response.data && response.data.success) {
+          console.log("Client deleted successfully");
+          await this.getClients([]);
+        }
+          } catch (error) {
+        console.log(error);
+      }
+
     }
   }
 });
