@@ -11,11 +11,12 @@
             <v-text-field v-model="editingClient.lastName" label="Nume"></v-text-field>
             <v-text-field type="number" v-model="editingClient.cnp" label="CNP" @keydown.enter="createFromCNP"
                           @blur="createFromCNP" v-limit-length="13"></v-text-field>
-            <v-text-field v-model="editingClient.series"  v-limit-length="2" label="Serie"></v-text-field>
-            <v-text-field type="number" v-model="editingClient.seriesNumber"  v-limit-length="6" label="Numar" ></v-text-field>
+            <v-text-field v-model="editingClient.series" v-limit-length="2" label="Serie"></v-text-field>
+            <v-text-field type="number" v-model="editingClient.seriesNumber" v-limit-length="6"
+                          label="Numar"></v-text-field>
             <v-select v-model="editingClient.sex" v-limit-length="1" :items="sexEnum" label="Sex"></v-select>
-            <v-text-field type="number" v-model="editingClient.age"  v-limit-length="2" label="Varsta"></v-text-field>
-            <v-text-field v-model="editingClient.countyOfb"  label="Judetul natal"></v-text-field>
+            <v-text-field type="number" v-model="editingClient.age" v-limit-length="2" label="Varsta"></v-text-field>
+            <v-text-field v-model="editingClient.countyOfb" label="Judetul natal"></v-text-field>
             <v-text-field v-model="editingClient.placeOfBirth" label="Locul nasterii"></v-text-field>
             <v-select :items="studiesEnum" v-model="editingClient.studies" label="Studii"></v-select>
             <v-text-field v-model="editingClient.nationality" label="Nationalitate"></v-text-field>
@@ -26,7 +27,7 @@
             <v-select :items="relationshipEnum" v-model="editingClient.relationshipStatus"
                       label="Situatie familiala"></v-select>
             <v-text-field v-if="!isSingle" type="number" v-model="editingClient.relationshipAge"
-                          v-limit-length="2"   label="Vechimea situatiei familiala (ani)"></v-text-field>
+                          v-limit-length="2" label="Vechimea situatiei familiala (ani)"></v-text-field>
 
             <v-select v-model="editingClient.occupation" :items="occupationEnum" label="Ocupatie"></v-select>
             <v-select v-model="editingClient.typeOfIncome" :items="typeOfIncomeEnum" label="Tip venit"></v-select>
@@ -39,10 +40,10 @@
                       label="Profesie"></v-select>
 
             <v-text-field type="number" v-model="editingClient.lengthOfEmployment"
-                          v-limit-length="2"   label="Numar de ani in campul muncii"></v-text-field>
+                          v-limit-length="2" label="Numar de ani in campul muncii"></v-text-field>
             <v-text-field type="number" v-model="editingClient.income" label="Venit net lunar"></v-text-field>
             <v-text-field type="number" v-model="editingClient.outstandingDebt" label="Datorii lunare"></v-text-field>
-            <v-text-field type="number"  v-limit-length="2" v-model="editingClient.existingCreditAccounts"
+            <v-text-field type="number" v-limit-length="2" v-model="editingClient.existingCreditAccounts"
                           label="Credite existente"></v-text-field>
             <v-select v-model="editingClient.creditHistory" :items="creditHistoryEnum"
                       label="Istoric credite"></v-select>
@@ -602,9 +603,8 @@ export default {
       this.tempFilterValueLabel = 'Value';
     },
     createFromCNP() {
-
       if (!this.isEditing && this.cnp === '') {
-        //reset age and sex
+        // Reset age and sex
         this.age = '';
         this.sex = '';
         return;
@@ -618,31 +618,38 @@ export default {
         cnp = this.cnp;
       }
 
-      const birthYear = cnp.slice(1, 3);
+      const birthYearPrefix = cnp[0]; // The first digit of CNP
+      const birthYearSuffix = cnp.slice(1, 3);
       const birthMonth = cnp.slice(3, 5);
       const birthDay = cnp.slice(5, 7);
 
       // Extract sex from CNP
-      const sexDigit = cnp[0];
-      const sex = sexDigit === "1" || sexDigit === "5" ? "M" : "F";
+      const sex = birthYearPrefix === "1" || birthYearPrefix === "5" ? "M" : "F";
 
-      // Calculate birthdate
-      const dateOfBirth = new Date(`${birthYear}-${birthMonth}-${birthDay}`);
+      // Calculate birth year
+      const currentYear = new Date().getFullYear();
+      const birthYear = birthYearPrefix === "1" || birthYearPrefix === "2" ? "19" : "20";
+      const fullBirthYear = birthYear + birthYearSuffix;
 
       // Calculate age
-      const currentDate = new Date();
-      const age = currentDate.getFullYear() - dateOfBirth.getFullYear();
+      const age = currentYear - Number(fullBirthYear);
+
+      if (age < 18 || age > 99) {
+
+          return;
+      }
 
       if (this.isEditing) {
-        this.editingClient.dateOfBirth = dateOfBirth;
+        this.editingClient.dateOfBirth = new Date(`${fullBirthYear}-${birthMonth}-${birthDay}`);
         this.editingClient.age = age;
         this.editingClient.sex = sex;
       } else {
-        this.dateOfBirth = dateOfBirth;
+        this.dateOfBirth = new Date(`${fullBirthYear}-${birthMonth}-${birthDay}`);
         this.age = age;
         this.sex = sex;
       }
-
+      console.log("Sex:", sex); // Output: Sex: M
+      console.log("Age:", age); // Output: Age: 76
     },
     editClient(client) {
       // You can set the client data to the data properties used for editing
