@@ -1,5 +1,6 @@
 <template>
   <v-container>
+    <!--    Edit client-->
     <v-dialog v-model="isEditing" max-width="600">
       <v-card>
         <v-card-title>
@@ -9,25 +10,25 @@
           <v-form @submit.prevent="saveEdit">
             <v-text-field v-model="editingClient.firstName" label="Prenume"></v-text-field>
             <v-text-field v-model="editingClient.lastName" label="Nume"></v-text-field>
-            <v-text-field type="number" v-model="editingClient.cnp" label="CNP" @keydown.enter="createFromCNP"
-                          @blur="createFromCNP" v-limit-length="13"></v-text-field>
+            <v-text-field v-model="editingClient.cnp" v-limit-length="13" label="CNP" type="number"
+                          @blur="createFromCNP" @keydown.enter="createFromCNP"></v-text-field>
             <v-text-field v-model="editingClient.series" v-limit-length="2" label="Serie"></v-text-field>
-            <v-text-field type="number" v-model="editingClient.seriesNumber" v-limit-length="6"
-                          label="Numar"></v-text-field>
+            <v-text-field v-model="editingClient.seriesNumber" v-limit-length="6" label="Numar"
+                          type="number"></v-text-field>
             <v-select v-model="editingClient.sex" v-limit-length="1" :items="sexEnum" label="Sex"></v-select>
-            <v-text-field type="number" v-model="editingClient.age" v-limit-length="2" label="Varsta"></v-text-field>
+            <v-text-field v-model="editingClient.age" v-limit-length="2" label="Varsta" type="number"></v-text-field>
             <v-text-field v-model="editingClient.countyOfb" label="Judetul natal"></v-text-field>
             <v-text-field v-model="editingClient.placeOfBirth" label="Locul nasterii"></v-text-field>
-            <v-select :items="studiesEnum" v-model="editingClient.studies" label="Studii"></v-select>
+            <v-select v-model="editingClient.studies" :items="studiesEnum" label="Studii"></v-select>
             <v-text-field v-model="editingClient.nationality" label="Nationalitate"></v-text-field>
             <v-checkbox v-model="editingClient.politicalExposure" label="Persoana expusa polic?(Da)"></v-checkbox>
             <v-checkbox v-model="editingClient.ownsCar" label="Proprietar autoturism?(Da)"></v-checkbox>
-            <v-text-field type="number" v-model="editingClient.dependents"
-                          v-limit-length="2" label="Numar persoane in intretinere"></v-text-field>
-            <v-select :items="relationshipEnum" v-model="editingClient.relationshipStatus"
+            <v-text-field v-model="editingClient.dependents" v-limit-length="2"
+                          label="Numar persoane in intretinere" type="number"></v-text-field>
+            <v-select v-model="editingClient.relationshipStatus" :items="relationshipEnum"
                       label="Situatie familiala"></v-select>
-            <v-text-field v-if="!isSingle" type="number" v-model="editingClient.relationshipAge"
-                          v-limit-length="2" label="Vechimea situatiei familiala (ani)"></v-text-field>
+            <v-text-field v-if="!isSingle" v-model="editingClient.relationshipAge" v-limit-length="2"
+                          label="Vechimea situatiei familiala (ani)" type="number"></v-text-field>
 
             <v-select v-model="editingClient.occupation" :items="occupationEnum" label="Ocupatie"></v-select>
             <v-select v-model="editingClient.typeOfIncome" :items="typeOfIncomeEnum" label="Tip venit"></v-select>
@@ -39,12 +40,12 @@
             <v-select v-model="editingClient.profession" :items="professionsStore.professions"
                       label="Profesie"></v-select>
 
-            <v-text-field type="number" v-model="editingClient.lengthOfEmployment"
-                          v-limit-length="2" label="Numar de ani in campul muncii"></v-text-field>
-            <v-text-field type="number" v-model="editingClient.income" label="Venit net lunar"></v-text-field>
-            <v-text-field type="number" v-model="editingClient.outstandingDebt" label="Datorii lunare"></v-text-field>
-            <v-text-field type="number" v-limit-length="2" v-model="editingClient.existingCreditAccounts"
-                          label="Credite existente"></v-text-field>
+            <v-text-field v-model="editingClient.lengthOfEmployment" v-limit-length="2"
+                          label="Numar de ani in campul muncii" type="number"></v-text-field>
+            <v-text-field v-model="editingClient.income" label="Venit net lunar" type="number"></v-text-field>
+            <v-text-field v-model="editingClient.outstandingDebt" label="Datorii lunare" type="number"></v-text-field>
+            <v-text-field v-model="editingClient.existingCreditAccounts" v-limit-length="2" label="Credite existente"
+                          type="number"></v-text-field>
             <v-select v-model="editingClient.creditHistory" :items="creditHistoryEnum"
                       label="Istoric credite"></v-select>
             <v-select v-model="editingClient.paymentHistory" :items="paymentHistoryEnum"
@@ -60,10 +61,11 @@
       </v-card>
     </v-dialog>
 
+    <!--    Tab -->
     <v-row class="d-flex align-center justify-center">
-      <v-col cols="12" md="12" lg="12">
+      <v-col cols="12" lg="12" md="12">
         <v-card>
-          <v-tabs v-model="tab" color="deep-purple-accent-4" align-tabs="center">
+          <v-tabs v-model="tab" align-tabs="center" color="deep-purple-accent-4">
             <v-tab value="1">Clienti</v-tab>
             <v-tab value="2">Status</v-tab>
             <v-tab value="3">
@@ -78,6 +80,7 @@
             <!--    CLIENTS TAB   -->
             <v-window-item value="1">
               <v-container fluid>
+                <!--                Filters-->
                 <v-row>
                   <v-col>
                     <v-card width="auto">
@@ -85,26 +88,27 @@
                       <v-card-item>
                         <v-row>
                           <v-col lg="4">
-                            <v-text-field :type="isNumber ? 'number' : 'text'" @keydown.enter="setFilterValue"
-                                          v-if="!isVSelect" @blur="setFilterValue" v-model="tempFilterValue"
-                                          :label="tempFilterValueLabel"></v-text-field>
+                            <v-text-field v-if="!isVSelect" v-model="tempFilterValue"
+                                          :label="tempFilterValueLabel" :type="isNumber ? 'number' : 'text'"
+                                          @blur="setFilterValue"
+                                          @keydown.enter="setFilterValue"></v-text-field>
 
-                            <v-select v-else-if="isVSelect" :items="availableItemsForVSelectFilterValue"
-                                      v-model="tempFilterValue" @blur="setFilterValue"
-                                      :label="tempFilterValueLabel"></v-select>
+                            <v-select v-else-if="isVSelect" v-model="tempFilterValue"
+                                      :items="availableItemsForVSelectFilterValue" :label="tempFilterValueLabel"
+                                      @blur="setFilterValue"></v-select>
                           </v-col>
 
                           <v-col lg="5">
-                            <v-autocomplete @click:clear="clearFilterName" v-model="tempFilterName"
-                                            @update:modelValue="selectFilter" clearable
-                                            label="Search By" :items="possibleFilters">Search By
+                            <v-autocomplete v-model="tempFilterName" :items="possibleFilters"
+                                            clearable label="Search By"
+                                            @click:clear="clearFilterName" @update:modelValue="selectFilter">Search By
                             </v-autocomplete>
                           </v-col>
                         </v-row>
                       </v-card-item>
                       <v-card-item>
-                        <v-chip @click:close="removeFromFilters(index)" v-for="(f, index) in filter" :key="f.name"
-                                closable color="secondary">
+                        <v-chip v-for="(f, index) in filter" :key="f.name" closable
+                                color="secondary" @click:close="removeFromFilters(index)">
                           {{ f.name + ": " + f.value }}
                         </v-chip>
                       </v-card-item>
@@ -114,10 +118,12 @@
 
                   </v-col>
                 </v-row>
+
                 <v-row class="d-flex align-center justify-center">
                   <v-col cols="12" md="12">
                     <v-sheet class="mx-auto">
-                      <v-table density="compact" hover show-select>
+                      <!--                      Clients Table-->
+                      <v-table density="compact" fixed-header hover show-select>
                         <thead>
                         <tr>
                           <th class="text-left">Prenume</th>
@@ -165,9 +171,49 @@
             <!--RATINGS TAB-->
             <v-window-item value="2">
               <v-container fluid>
-                <v-row class="d-flex align-center justify-center">
+                <v-row>
+                  <v-col>
+                    <v-card>
+                      <v-card-title>Filters:</v-card-title>
+                      <v-card-item>
+                        <v-row>
+                          <v-col lg="4">
+                            <v-text-field v-if="!isVSelect" v-model="tempRatingFilterValue"
+                                          :label="tempRatingFilterValueLabel" :type="isNumber ? 'number' : 'text'"
+                                          @blur="setRatingFilterValue"
+                                          @keydown.enter="setRatingFilterValue"></v-text-field>
+
+                            <v-select v-else-if="isVSelect" v-model="tempRatingFilterValue"
+                                      :items="availableRatingItemsForVSelectFilterValue"
+                                      :label="tempRatingFilterValueLabel"
+                                      @blur="setRatingFilterValue"></v-select>
+                          </v-col>
+
+                          <v-col lg="5">
+                            <v-autocomplete v-model="tempRatingFilterName" :items="possibleRatingFilters"
+                                            clearable label="Search By"
+                                            @click:clear="clearRatingFilterName"
+                                            @update:modelValue="selectRatingFilter">Search By
+                            </v-autocomplete>
+                          </v-col>
+                        </v-row>
+                      </v-card-item>
+                      <v-card-item>
+                        <v-chip v-for="(f, index) in ratingFilter" :key="f.name" closable
+                                color="secondary" @click:close="removeFromRatingFilters(index)">
+                          {{ f.name + ": " + f.value }}
+                        </v-chip>
+                      </v-card-item>
+                    </v-card>
+                  </v-col>
+                  <v-col lg="3">
+
+                  </v-col>
+                </v-row>
+
+                <v-row>
                   <v-col cols="12" md="12">
-                    <v-sheet width="850" class="mx-auto">
+                    <v-sheet class="mx-auto">
                       <v-table density="compact" hover>
                         <thead>
                         <tr>
@@ -197,7 +243,7 @@
               <v-container fluid>
                 <v-row class="d-flex align-center justify-center">
                   <v-col cols="12" md="12">
-                    <v-sheet width="700" class="mx-auto">
+                    <v-sheet class="mx-auto" width="700">
                       <h1>Aplicant</h1>
                       <v-form @submit.prevent>
                         <v-card class="mx-auto">
@@ -221,15 +267,15 @@
                                   </v-col>
                                 </v-row>
 
-                                <v-text-field v-model="cnp" type="number" v-limit-length="13" label="CNP"
-                                              @keydown.enter="createFromCNP" @blur="createFromCNP"></v-text-field>
+                                <v-text-field v-model="cnp" v-limit-length="13" label="CNP" type="number"
+                                              @blur="createFromCNP" @keydown.enter="createFromCNP"></v-text-field>
                                 <v-row>
                                   <v-col>
                                     <v-text-field v-model="series" v-limit-length="2" label="Serie"></v-text-field>
                                   </v-col>
                                   <v-col>
-                                    <v-text-field v-model="seriesNumber" type="number" v-limit-length="6"
-                                                  label="Numar"></v-text-field>
+                                    <v-text-field v-model="seriesNumber" v-limit-length="6" label="Numar"
+                                                  type="number"></v-text-field>
                                   </v-col>
                                 </v-row>
 
@@ -238,8 +284,8 @@
                                     <v-select v-model="sex" v-limit-length="1" :items="sexEnum" label="Sex"></v-select>
                                   </v-col>
                                   <v-col>
-                                    <v-text-field v-model="age" type="number" v-limit-length="2"
-                                                  label="Varsta"></v-text-field>
+                                    <v-text-field v-model="age" v-limit-length="2" label="Varsta"
+                                                  type="number"></v-text-field>
                                   </v-col>
                                 </v-row>
 
@@ -253,7 +299,7 @@
                                 </v-row>
                                 <v-row>
                                   <v-col>
-                                    <v-select :items="studiesEnum" v-model="studies" label="Studii"></v-select>
+                                    <v-select v-model="studies" :items="studiesEnum" label="Studii"></v-select>
                                   </v-col>
                                   <v-col>
                                     <v-text-field v-model="nationality" label="Nationalitate"></v-text-field>
@@ -274,9 +320,10 @@
                                     <v-checkbox v-model="ownsCar" label="Proprietar autoturism?(Da)"></v-checkbox>
                                   </v-col>
                                 </v-row>
-                                <v-text-field v-model="dependents" type="number" v-limit-length="2"
-                                              label="Numar persoane in intretinere"></v-text-field>
-                                <v-select :items="relationshipEnum" v-model="relationshipStatus"
+                                <v-text-field v-model="dependents" v-limit-length="2"
+                                              label="Numar persoane in intretinere"
+                                              type="number"></v-text-field>
+                                <v-select v-model="relationshipStatus" :items="relationshipEnum"
                                           label="Situatie familiala"></v-select>
                                 <v-text-field v-if="!isSingle" v-model="relationshipAge"
                                               label="Vechimea situatiei familiala (ani)"></v-text-field>
@@ -300,23 +347,25 @@
                                               label="Profesie"></v-select>
                                   </v-col>
                                 </v-row>
-                                <v-text-field v-model="lengthOfEmployment" type="number" v-limit-length="2"
-                                              label="Numar de ani in campul muncii"></v-text-field>
+                                <v-text-field v-model="lengthOfEmployment" v-limit-length="2"
+                                              label="Numar de ani in campul muncii"
+                                              type="number"></v-text-field>
 
                                 <v-row>
                                   <v-col>
-                                    <v-text-field v-model="income" type="number" v-limit-length="10"
-                                                  label="Venit net lunar"></v-text-field>
+                                    <v-text-field v-model="income" v-limit-length="10" label="Venit net lunar"
+                                                  type="number"></v-text-field>
                                   </v-col>
                                   <v-col>
-                                    <v-text-field v-model="outstandingDebt" type="number" v-limit-length="10"
-                                                  label="Datorii lunare"></v-text-field>
+                                    <v-text-field v-model="outstandingDebt" v-limit-length="10" label="Datorii lunare"
+                                                  type="number"></v-text-field>
                                   </v-col>
                                 </v-row>
                                 <v-row>
                                   <v-col>
-                                    <v-text-field v-model="existingCreditAccounts" type="number" v-limit-length="2"
-                                                  label="Credite existente"></v-text-field>
+                                    <v-text-field v-model="existingCreditAccounts" v-limit-length="2"
+                                                  label="Credite existente"
+                                                  type="number"></v-text-field>
                                   </v-col>
                                   <v-col>
                                     <v-select v-model="creditHistory" :items="creditHistoryEnum"
@@ -354,7 +403,7 @@
                             <v-btn v-if="step > 1" variant="text" @click="step--">Back</v-btn>
                             <!--                                <v-spacer></v-spacer>-->
                             <v-btn v-if="step < 3" color="primary" variant="flat" @click="step++">Next</v-btn>
-                            <v-btn v-if="step === 3" @click="addClient" type="submit" block>Submit</v-btn>
+                            <v-btn v-if="step === 3" block type="submit" @click="addClient">Submit</v-btn>
                           </v-card-actions>
                         </v-card>
                       </v-form>
@@ -395,7 +444,7 @@ export default {
       await professionsStore.getProfessions();
       await industriesStore.getIndustries();
 
-      await clientsRatingsStore.getRatings();
+      await clientsRatingsStore.getRatings([]);
       await clientsStore.getClients([]);
     });
 
@@ -417,8 +466,8 @@ export default {
     editingClient: null,
     originalClient: null,
 
-    possibleFilters: ['Nume', 'Prenume', 'Studii', 'Varsta', 'Tip Venit', 'Istoric', 'Credite deschise', 'Venit', 'Datorie'],
 
+    possibleFilters: ['Nume', 'Prenume', 'Studii', 'Varsta', 'Tip Venit', 'Istoric', 'Credite deschise', 'Venit', 'Datorie'],
     possibleFiltersKeyPair: [
       {
         name: 'Nume',
@@ -457,15 +506,39 @@ export default {
         value: 'outstandingDebt'
       },
     ],
-
     tempFilterName: '',
     tempFilterValue: '',
     tempFilterValueLabel: 'Value',
-
     availableItemsForVSelectFilterValue: [],
-
     filter: [],
     apiFilterByName: '',
+
+    possibleRatingFilters: ['Nume', 'Prenume', 'Scor total', 'Rating'],
+    possibleRatingFiltersKeyPair: [
+      {
+        name: 'Nume',
+        value: 'lastName'
+      },
+      {
+        name: 'Prenume',
+        value: 'firstName',
+      },
+      {
+        name: 'Scor total',
+        value: 'totalCreditScore',
+      },
+      {
+        name: 'Rating',
+        value: 'creditRating',
+      }
+    ],
+    tempRatingFilterName: '',
+    tempRatingFilterValue: '',
+    tempRatingFilterValueLabel: 'Value',
+    availableRatingItemsForVSelectFilterValue: [],
+    ratingFilter: [],
+    apiRatingFilterByName: '',
+
 
     sexEnum: ['M', 'F'],
     studiesEnum: ['Liceu', 'Universitate', 'Postlicela', 'Studii Primare'],
@@ -502,13 +575,12 @@ export default {
     creditHistory: '',
     paymentHistory: '',
     existingCreditAccounts: null,
-    rules:
-      [
-        value => {
-          if (value) return true
-          return ''
-        },
-      ],
+    rules: [
+      value => {
+        if (value) return true
+        return ''
+      },
+    ],
   }),
   methods: {
     addClient() {
@@ -547,6 +619,7 @@ export default {
       }
       this.clientsStore.addClient(client);
     },
+
     selectFilter(filter) {
       if (filter !== null) {
         this.tempFilterName = filter;
@@ -572,6 +645,25 @@ export default {
         }
       }
     },
+    selectRatingFilter(filter) {
+      if (filter !== null) {
+        this.tempRatingFilterName = filter;
+        this.tempRatingFilterValueLabel = filter;
+
+
+        const filterRatingValue = this.possibleRatingFiltersKeyPair.find(f => f.name === filter);
+
+        this.apiRatingFilterByName = filterRatingValue.value;
+
+        const ratingEnum = ['Excellent Credit (Very Low Risk)', 'Very Good Credit (Low Risk)', 'Good Credit (Moderate Risk)', 'Fair Credit (Moderate to High Risk)', 'Poor Credit (High Risk)', 'Possible creditworthy client (Upper Approximation)', 'Not creditworthy']
+        if (filter === 'Rating') {
+          this.availableRatingItemsForVSelectFilterValue = ratingEnum;
+        } else {
+          this.availableRatingItemsForVSelectFilterValue = [];
+        }
+      }
+    },
+
     setFilterValue() {
       if (this.tempFilterName !== '' && this.tempFilterValue !== '') {
 
@@ -595,13 +687,48 @@ export default {
 
       this.clientsStore.getClients(this.filter);
     },
+    setRatingFilterValue() {
+
+      if (this.tempRatingFilterName !== '' && this.tempRatingFilterValue !== '') {
+
+        const existingFilter = this.ratingFilter.find(filter => filter.name === this.tempRatingFilterName);
+        if (existingFilter) {
+          // Update the value of the existing filter
+          existingFilter.value = this.tempRatingFilterValue;
+        } else {
+          // Add a new filter
+          this.ratingFilter.push({
+            name: this.tempRatingFilterName,
+            value: this.tempRatingFilterValue,
+            apiValue: this.apiRatingFilterByName
+          });
+        }
+
+        this.tempRatingFilterValue = '';
+        this.tempRatingFilterName = '';
+        this.tempRatingFilterValueLabel = 'Value';
+      }
+
+      this.clientsRatingsStore.getRatings(this.ratingFilter);
+    },
+
+
     removeFromFilters(index) {
       this.filter.splice(index, 1);
       this.clientsStore.getClients(this.filter);
     },
+    removeFromRatingFilters(index) {
+      this.ratingFilter.splice(index, 1);
+      this.clientsRatingsStore.getRatings(this.ratingFilter);
+    },
+
     clearFilterName() {
       this.tempFilterValueLabel = 'Value';
     },
+    clearRatingFilterName() {
+      this.tempRatingFilterValueLabel = 'Value';
+    },
+
     createFromCNP() {
       if (!this.isEditing && this.cnp === '') {
         // Reset age and sex
@@ -636,7 +763,7 @@ export default {
 
       if (age < 18 || age > 99) {
 
-          return;
+        return;
       }
 
       if (this.isEditing) {
@@ -648,8 +775,6 @@ export default {
         this.age = age;
         this.sex = sex;
       }
-      console.log("Sex:", sex); // Output: Sex: M
-      console.log("Age:", age); // Output: Age: 76
     },
     editClient(client) {
       // You can set the client data to the data properties used for editing
@@ -705,10 +830,10 @@ export default {
       }
     },
     isVSelect() {
-      return (this.tempFilterName === 'Studii' || this.tempFilterName === 'Tip Venit' || this.tempFilterName === 'Istoric');
+      return (this.tempFilterName === 'Studii' || this.tempFilterName === 'Tip Venit' || this.tempFilterName === 'Istoric' || this.tempRatingFilterName === 'Rating');
     },
     isNumber() {
-      return (this.tempFilterName === 'Varsta' || this.tempFilterName === 'Credite deschise' || this.tempFilterName === 'Venit');
+      return (this.tempFilterName === 'Varsta' || this.tempFilterName === 'Credite deschise' || this.tempFilterName === 'Venit' || this.tempRatingFilterName === 'Total scor');
     },
   },
   directives: {

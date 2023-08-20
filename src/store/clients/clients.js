@@ -21,7 +21,7 @@ export const useClientsStore = defineStore('client', {
         const response = await axiosInstance.get(url);
         if (response && response.data && response.data.success) {
           this.clients = response.data.clients;
-          await clientsRatingsStore.getRatings();
+          await clientsRatingsStore.getRatings([]);
         }
       } catch (error) {
         console.error('Error fetching clients:', error);
@@ -101,7 +101,7 @@ export const useClientsStore = defineStore('client', {
           console.log("Client deleted successfully");
           await this.getClients([]);
         }
-          } catch (error) {
+      } catch (error) {
         console.log(error);
       }
 
