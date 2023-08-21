@@ -540,7 +540,7 @@ export default {
     apiRatingFilterByName: '',
 
 
-    sexEnum: ['M', 'F'],
+    sexEnum: ['m', 'f'],
     studiesEnum: ['Liceu', 'Universitate', 'Postlicela', 'Studii Primare'],
     relationshipEnum: ['Necasatorit', 'Casatorit', 'Concubinaj', 'Divortat', 'Vaduv'],
     typeOfIncomeEnum: ['Pensie', 'Salariu'],
@@ -751,7 +751,7 @@ export default {
       const birthDay = cnp.slice(5, 7);
 
       // Extract sex from CNP
-      const sex = birthYearPrefix === "1" || birthYearPrefix === "5" ? "M" : "F";
+      const sex = birthYearPrefix === "1" || birthYearPrefix === "5" ? "m" : "f";
 
       // Calculate birth year
       const currentYear = new Date().getFullYear();
