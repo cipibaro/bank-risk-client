@@ -380,20 +380,6 @@
                               </v-card-text>
                             </v-window-item>
 
-                            <!--CONTACT DATA-->
-                            <v-window-item :value="3">
-                              <v-card-text>
-                                <v-row>
-                                  <v-col>
-                                    <v-text-field label="Email" placeholder="john@google.com"></v-text-field>
-                                    <span class="text-caption text-grey-darken-1">This is the email you will use to login to your Vuetify account</span>
-                                  </v-col>
-                                  <v-col>
-                                    <v-text-field label="Numar de telefon"></v-text-field>
-                                  </v-col>
-                                </v-row>
-                              </v-card-text>
-                            </v-window-item>
 
                           </v-window>
 
@@ -402,8 +388,8 @@
                           <v-card-actions>
                             <v-btn v-if="step > 1" variant="text" @click="step--">Back</v-btn>
                             <!--                                <v-spacer></v-spacer>-->
-                            <v-btn v-if="step < 3" color="primary" variant="flat" @click="step++">Next</v-btn>
-                            <v-btn v-if="step === 3" block type="submit" @click="addClient">Submit</v-btn>
+                            <v-btn v-if="step < 2" color="primary" variant="flat" @click="step++">Next</v-btn>
+                            <v-btn v-if="step === 2" block type="submit" @click="addClient">Submit</v-btn>
                           </v-card-actions>
                         </v-card>
                       </v-form>
@@ -655,7 +641,7 @@ export default {
 
         this.apiRatingFilterByName = filterRatingValue.value;
 
-        const ratingEnum = ['Excellent Credit (Very Low Risk)', 'Very Good Credit (Low Risk)', 'Good Credit (Moderate Risk)', 'Fair Credit (Moderate to High Risk)', 'Poor Credit (High Risk)', 'Possible creditworthy client (Upper Approximation)', 'Not creditworthy']
+        const ratingEnum = ['Excellent Credit (Very Low Risk)', 'Good Credit (Moderate Risk)', 'Poor Credit (High Risk)', 'Possible creditworthy client (Upper Approximation)', 'Not creditworthy']
         if (filter === 'Rating') {
           this.availableRatingItemsForVSelectFilterValue = ratingEnum;
         } else {
@@ -780,6 +766,8 @@ export default {
       // You can set the client data to the data properties used for editing
       this.editingClient = {...client};
       this.originalClient = {...client};
+
+      console.log(this.editingClient.profession);
 
       const industry = this.industriesStore.ids.find(i => i._id === this.editingClient.employmentIndustry);
       const profession = this.professionsStore.prof.find(p => p._id === this.editingClient.profession);
